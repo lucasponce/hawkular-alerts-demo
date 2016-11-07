@@ -43,55 +43,109 @@ A GUI SMTP server can be set up with these steps:
 ----
 ==================
 
-== Step 1: Install a Wildfly Server
+== Step I: Install and start a Wildfly Server
 
-It downloads and installs on current folder a Wildfly Server.
+In a new bash session:
+ +
+[source,shell,subs="+attributes"]
+----    
+    ./01_install.sh
+----
+ +
+
+It downloads and installs on current folder a Wildfly Server. +
 This Wildfly Server will be used to send data and events into Hawkular Alerting.
+
+Then +
 
 [source,shell,subs="+attributes"]
 ----    
-    01_install.sh
+    ./02_start-wildfly.sh
 ----
-
-== Step 2: Start the Wildfly Server
 
 It starts a Wildfly Server with a port-offset=150.
 
-[source,shell,subs="+attributes"]
-----    
-    02_start-wildfly.sh
-----
-
-== Step 3: Import triggers definitions
+== Step II: Import triggers definitions
 
 [source,shell,subs="+attributes"]
 ----    
-    03_import-definitions.sh
+    ./03_import-definitions.sh
 ----
 
-== Step 4: Start a process agent
+== Step III: Start a process agent
+
+In a new bash session:
+ +
+[source,shell,subs="+attributes"]
+----    
+    ./04_agent-process.sh
+----
+
+=== Step III.a: Stop the Wildfly Server
+
+Try to stop the Wildfly Server started on Step I with a CTRL+C. +
+Check that in two seconds Hawkular Alerting should receive an Alert like:
+
+[source,shell,subs="+attributes"]
+----  
+21:16:43,555 INFO  [org.hawkular.alerts.actions.api] (standalone-action-0) HAWKALERT240001: Plugin [email] has received an action message: [StandaloneActionMessage[action=Action[eventId='wildfly-availability-1478549803040-a3de9345-8a97-4cd9-a18f-3e32b1791f70', ctime=1478549803042, event=Alert{severity=CRITICAL, status=OPEN, notes=[], lifecycle=[LifeCycle{user='system', status=OPEN, stime=1478549803040}], resolvedEvalSets=null}, result='WAITING']]]
+----
+
+If an smtp email server is configured you should received a proper Alert [open] email.
+
+=== Step III.b: Re-start the Wildfly Server
+
+Re-start the server with the script
 
 [source,shell,subs="+attributes"]
 ----    
-    04_agent-process.sh
+    ./02_start-wildfly.sh
 ----
 
-== Step 5: Start a log agent
+Check that Hawkular Alerting should automatically resolve the open Alert.
+
+[source,shell,subs="+attributes"]
+----
+21:16:59,549 INFO  [org.hawkular.alerts.actions.api] (standalone-action-1) HAWKALERT240001: Plugin [email] has received an action message: [StandaloneActionMessage[action=Action[eventId='wildfly-availability-1478549803040-a3de9345-8a97-4cd9-a18f-3e32b1791f70', ctime=1478549819082, event=Alert{severity=CRITICAL, status=RESOLVED, notes=[Note{user='AutoResolve', ctime=1478549819066, text='Trigger AutoResolve=True'}], lifecycle=[LifeCycle{user='system', status=OPEN, stime=1478549803040}, LifeCycle{user='AutoResolve', status=RESOLVED, stime=1478549819066}], resolvedEvalSets=[[AvailabilityConditionEval [condition=AvailabilityCondition [triggerId='wildfly-availability', triggerMode=AUTORESOLVE, dataId='demo-avail', operator='UP'], value=UP, match=true, evalTimestamp=1478549819038, dataTimestamp=1478549817727]]]}, result='WAITING']]]  
+----
+
+If an smtp email server is configured you should received a proper Alert [resolved] email.
+
+== Step IV: Start a log agent
+
+In a new bash session:
+ +
+[source,shell,subs="+attributes"]
+----    
+    ./05_agent-log.sh
+----
+
+=== Step IV.a: Deploy/Undeploy demo app
+
+In a new bash session:
+ +
+[source,shell,subs="+attributes"]
+----    
+    ./06_deploy-app.sh
+    ./07_undeploy-app.sh
+----
+
+Check that Hawkular Alerting trigger events for deployed and undeployed applications.
 
 [source,shell,subs="+attributes"]
 ----    
-    05_agent-log.sh
+21:33:21,441 INFO  [org.hawkular.alerts.actions.api] (standalone-action-4) HAWKALERT240001: Plugin [email] has received an action message: [StandaloneActionMessage[action=Action[eventId='wildfly-deployments-1478550801091-4c88ec46-69fa-4a48-b36f-f77d5a5d5534', ctime=1478550801091, event=Event [tenantId=my-organization, id=wildfly-deployments-1478550801091-4c88ec46-69fa-4a48-b36f-f77d5a5d5534, ctime=1478550801091, category=TRIGGER, dataId=wildfly-deployments, dataSource=_none_, text=Generate events on deployments, context={}, tags={}, trigger=Trigger [tenantId=my-organization, id=wildfly-deployments, type=STANDARD, eventType=EVENT, name=Deployments on Wildfly Server, description=Generate events on deployments, eventCategory=null, eventText=null, severity=MEDIUM, context={}, actions=[TriggerAction[tenantId='my-organization', actionPlugin='email', actionId='notify-to-developers', states=[], calendar='null']], autoDisable=false, autoEnable=false, autoResolve=false, autoResolveAlerts=true, autoResolveMatch=ALL, memberOf=null, dataIdMap={}, enabled=true, firingMatch=ALL, mode=FIRING, tags={}]], result='WAITING']]]
 ----
-
-=== Step 5.1: Deploy/Undeploy demo app
 
 [source,shell,subs="+attributes"]
-----    
-    06_deploy-app.sh
-    07_undeploy-app.sh
+----
+21:32:51,448 INFO  [org.hawkular.alerts.actions.api] (standalone-action-3) HAWKALERT240001: Plugin [email] has received an action message: [StandaloneActionMessage[action=Action[eventId='wildfly-undeployments-1478550771090-54c62ab9-16dc-4999-99cf-806e343158a2', ctime=1478550771090, event=Event [tenantId=my-organization, id=wildfly-undeployments-1478550771090-54c62ab9-16dc-4999-99cf-806e343158a2, ctime=1478550771090, category=TRIGGER, dataId=wildfly-undeployments, dataSource=_none_, text=Generate events on undeployments, context={}, tags={}, trigger=Trigger [tenantId=my-organization, id=wildfly-undeployments, type=STANDARD, eventType=EVENT, name=Undeployments on Wildfly Server, description=Generate events on undeployments, eventCategory=null, eventText=null, severity=MEDIUM, context={}, actions=[TriggerAction[tenantId='my-organization', actionPlugin='email', actionId='notify-to-developers', states=[], calendar='null']], autoDisable=false, autoEnable=false, autoResolve=false, autoResolveAlerts=true, autoResolveMatch=ALL, memberOf=null, dataIdMap={}, enabled=true, firingMatch=ALL, mode=FIRING, tags={}]], result='WAITING']]]
 ----
 
-=== Step 5.2: Interact with the demo app
+If an smtp email server is configured you should received a proper Event email.
+
+
+=== Step IV.b: Interact with the demo app
 
 Open a browser on:
 

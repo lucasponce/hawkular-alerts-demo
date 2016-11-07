@@ -17,9 +17,9 @@
       "dampenings":[
 		{
 		  "triggerMode": "FIRING",
-		  "type": "STRICT",
+		  "type": "RELAXED_COUNT",
 		  "evalTrueSetting": 3,
-		  "evalTotalSetting": 3
+		  "evalTotalSetting": 6
 	    }	
 	  ],
       "conditions":[
