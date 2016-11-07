@@ -18,7 +18,8 @@
 		{
 		  "triggerMode": "FIRING",
 		  "type": "STRICT",
-		  "evalTrueSetting": 3
+		  "evalTrueSetting": 3,
+		  "evalTotalSetting": 3
 	    }	
 	  ],
       "conditions":[
