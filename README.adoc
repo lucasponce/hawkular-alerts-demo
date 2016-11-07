@@ -10,8 +10,7 @@ Build a Hawkular Alerting standalone distribution
 
 [source,shell,subs="+attributes"]
 ----
-	git clone https://github.com/hawkular/hawkular-alerts.git
-	
+git clone https://github.com/hawkular/hawkular-alerts.git	
     cd hawkular-alerts
     mvn clean install
 ----
