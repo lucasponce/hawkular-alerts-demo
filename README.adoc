@@ -1,0 +1,103 @@
+= Hawkular Alerting Demo
+
+This repository contains resources to prepare a standalone demo for Hawkular Alerting.
+
+NOTE: This demo has been tested on Linux platforms. Bash scripts can be easily translated into other platforms.
+
+== Step 0: Prepare Hawkular Alerting
+
+Build a Hawkular Alerting standalone distribution
+
+[source,shell,subs="+attributes"]
+----
+	git clone https://github.com/hawkular/hawkular-alerts.git
+    cd hawkular-alerts
+    mvn clean install
+----
+
+Start the standalone server
+
+[source,shell,subs="+attributes"]
+----
+    cd hawkular-alerts/hawkular-alerts-rest-tests/target/wildfly-10.0.0.Final/
+    bin/standalone.sh
+----
+
+[TIP]
+.Test Email server
+==================
+By default, Hawkular Alerting will send email notifications using a SMTP server on localhost:25, for demo purposes
+ a test smtp server can be used to validate the reception of the emails. +
+  +
+Hawkular Alerting has been tested using
+  https://nilhcem.github.io/FakeSMTP/[FakeSMTP]. +
+  +
+A GUI SMTP server can be set up with these steps:
+[source,shell,subs="+attributes"]
+----
+    git clone https://github.com/Nilhcem/FakeSMTP
+    cd FakeSMTP
+    mvn clean install -DskipTests
+    cd target
+    sudo java -jar fakeSMTP-*.jar
+----
+==================
+
+== Step 1: Install a Wildfly Server
+
+It downloads and installs on current folder a Wildfly Server.
+This Wildfly Server will be used to send data and events into Hawkular Alerting.
+
+[source,shell,subs="+attributes"]
+----    
+    01_install.sh
+----
+
+== Step 2: Start the Wildfly Server
+
+It starts a Wildfly Server with a port-offset=150.
+
+[source,shell,subs="+attributes"]
+----    
+    02_start-wildfly.sh
+----
+
+== Step 3: Import triggers definitions
+
+[source,shell,subs="+attributes"]
+----    
+    03_import-definitions.sh
+----
+
+== Step 4: Start a process agent
+
+[source,shell,subs="+attributes"]
+----    
+    04_agent-process.sh
+----
+
+== Step 5: Start a log agent
+
+[source,shell,subs="+attributes"]
+----    
+    05_agent-log.sh
+----
+
+=== Step 5.1: Deploy/Undeploy demo app
+
+[source,shell,subs="+attributes"]
+----    
+    06_deploy-app.sh
+    07_undeploy-app.sh
+----
+
+=== Step 5.2: Interact with the demo app
+
+Open a browser on:
+
+[source,shell,subs="+attributes"]
+----    
+	http://localhost:8230/wildfly-helloworld-html5/
+----
+
+Introduce _name1_ as a name to generate an app WARN log or _name2_ to generate an app ERROR log.

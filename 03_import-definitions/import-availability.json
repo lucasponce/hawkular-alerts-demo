@@ -1,0 +1,36 @@
+{
+  "triggers":[
+    {
+      "trigger":{
+        "id": "wildfly-availability",
+        "name": "Wildfly Availability",
+        "description": "Check if Wildfly Server is not UP. Automatically resolved.",
+        "severity": "CRITICAL",
+        "enabled": true,
+        "autoResolve": true,
+        "autoResolveAlerts": true,
+        "actions":[
+          {
+            "actionPlugin": "email",
+            "actionId": "notify-to-admins"
+          }
+        ]
+      },
+      "conditions":[
+        {
+          "triggerMode": "FIRING",
+          "type": "AVAILABILITY",
+          "dataId": "demo-avail",
+          "operator": "NOT_UP"
+        },
+        {
+          "triggerMode": "AUTORESOLVE",
+          "type": "AVAILABILITY",
+          "dataId": "demo-avail",
+          "operator": "UP"
+        }
+      ]
+    }
+  ],
+  "actions":[]
+}

@@ -1,0 +1,19 @@
+{
+  "triggers":[],
+  "actions":[
+    {
+      "actionPlugin": "email",
+      "actionId": "notify-to-admins",
+      "properties": {
+        "to": "admins@hawkular.org"
+      }
+    },
+    {
+      "actionPlugin": "email",
+      "actionId": "notify-to-developers",
+      "properties": {
+        "to": "developers@hawkular.org"
+      }
+    }    
+  ]
+}

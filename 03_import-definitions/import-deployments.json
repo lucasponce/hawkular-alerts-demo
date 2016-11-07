@@ -1,0 +1,51 @@
+{
+  "triggers":[
+    {
+      "trigger":{
+        "id": "wildfly-deployments",
+        "name": "Deployments on Wildfly Server",
+        "description": "Generate events on deployments",
+        "eventType": "EVENT",
+        "enabled": true,
+        "actions":[
+          {
+            "actionPlugin": "email",
+            "actionId": "notify-to-developers"
+          }
+        ]
+      },
+      "conditions":[
+        {
+          "triggerMode": "FIRING",
+          "type": "EVENT",
+          "dataId": "demo-log",
+          "expression": "category == 'DEPLOYMENT',text contains 'Deployed'"
+        }
+      ]
+    },
+    {
+      "trigger":{
+        "id": "wildfly-undeployments",
+        "name": "Undeployments on Wildfly Server",
+        "description": "Generate events on undeployments",
+        "eventType": "EVENT",
+        "enabled": true,
+        "actions":[
+          {
+            "actionPlugin": "email",
+            "actionId": "notify-to-developers"
+          }
+        ]
+      },
+      "conditions":[
+        {
+          "triggerMode": "FIRING",
+          "type": "EVENT",
+          "dataId": "demo-log",
+          "expression": "category == 'DEPLOYMENT',text contains 'Undeployed'"
+        }
+      ]
+    }    
+  ],
+  "actions":[]
+}

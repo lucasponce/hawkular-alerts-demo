@@ -1,0 +1,58 @@
+{
+  "triggers":[
+    {
+      "trigger":{
+        "id": "wildfly-app-warnings",
+        "name": "Warnings on Hello World app",
+        "description": "Alerts on WARN messages from Hello World app",
+        "severity": "MEDIUM",
+        "enabled": true,
+        "actions":[
+          {
+            "actionPlugin": "email",
+            "actionId": "notify-to-developers"
+          }
+        ]
+      },
+      "dampenings":[
+		{
+		  "triggerMode": "FIRING",
+		  "type": "STRICT",
+		  "evalTrueSetting": 3
+	    }	
+	  ],
+      "conditions":[
+        {
+          "triggerMode": "FIRING",
+          "type": "EVENT",
+          "dataId": "demo-log",
+          "expression": "category == 'LOG',tags.level == 'WARN',text contains 'HelloService'"
+        }
+      ]
+    },
+    {
+      "trigger":{
+        "id": "wildfly-app-error",
+        "name": "Errors on Hello World app",
+        "description": "Alerts on ERROR messages from Hello World app",
+        "severity": "HIGH",
+        "enabled": true,
+        "actions":[
+          {
+            "actionPlugin": "email",
+            "actionId": "notify-to-developers"
+          }
+        ]
+      },
+      "conditions":[
+        {
+          "triggerMode": "FIRING",
+          "type": "EVENT",
+          "dataId": "demo-log",
+          "expression": "category == 'LOG',tags.level == 'ERROR',text contains 'HelloService'"
+        }
+      ]
+    }    
+  ],
+  "actions":[]
+}
