@@ -24,7 +24,7 @@ Start Hawkular Alerting:
 
 [source,shell,subs="+attributes"]
 ----
-    cd hawkular-alerts/hawkular-alerts-rest-tests/target/wildfly-10.0.0.Final/
+    cd hawkular-alerts-rest-tests/target/wildfly-10.0.0.Final/
     bin/standalone.sh
 ----
 
@@ -67,7 +67,7 @@ Then start the server on a port-offset=150 using: +
     ./02_start-wildfly.sh
 ----
 
-== Import triggers definitions
+== Import trigger definitions
 
 In a new bash session, import the definitions using the script:
 
