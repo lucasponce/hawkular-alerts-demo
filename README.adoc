@@ -6,7 +6,7 @@ This demo will build a standalone distribution of Hawkular Alerting. +
  + 
 It will download and install a second Wildfly Server that will be monitored + 
 sending data and logs into Hawkular Alerting for evaluation. 
- + 
+ 
 NOTE: This demo has been tested on Linux platforms. Bash scripts can be easily translated into other platforms.
 
 == Prepare Hawkular Alerting
