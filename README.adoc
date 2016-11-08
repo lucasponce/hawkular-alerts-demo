@@ -105,6 +105,8 @@ The trigger that detects WARN messages has defined a Dampening rule to control w
 On this case, it will fire when there are at least 3 WARN messages on a sequence of 10 log messages. +
  +
 On the contrary, the trigger that detects ERROR message will fire on a single ERROR message.
+ +
+These triggers do not AUTORESOLVE the issue, so this means that these applications alerts need human intervetion to be resolved. 
 
 == Start a process agent
 
@@ -204,6 +206,9 @@ Open a browser on:
 ----
 
 This demo app is configured to print INFO messages every time the form is submitted. +
-But using _name1_ as a name will generate an app WARN log and using _name2_ will generate an app ERROR log.
  +
-Try to validate how Dampening is acting and only and alert will be generated when there are 3 WARN messages per 10 total messages of the log but an alert will be generated on every single ERROR message.
+Using _name1_ as a name will generate an app WARN log. +
+Using _name2_ will generate an app ERROR log.
+ +
+Try to validate how Dampening is working and only and alert will be generated when there are 3 WARN messages per 10 total messages. +
+Check that an alert will be generated on every single app ERROR message.
