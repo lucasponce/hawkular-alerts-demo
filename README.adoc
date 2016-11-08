@@ -221,7 +221,7 @@ Triggers without AUTORESOLVE feature enabled fire Alerts that need manual interv
  +
 Alerts are designed to indicate that someone needs to review or perform some task on it.
  +
-Alerts support a lifecycle of OPEN, ACKNOWLEDGED and RESOLVED states.
+Alerts support a lifecycle of OPEN, ACKNOWLEDGED and RESOLVED states. +
  +
 To acknowledged pending open alerts wen can use the following script:
  +
@@ -229,11 +229,14 @@ To acknowledged pending open alerts wen can use the following script:
 ----    
     ./08_acknowledge_alerts.sh
 ----
+
  +
+ 
 To resolve acknowledge alerts we can use the following script:
  + 
+ 
 [source,shell,subs="+attributes"]
 ----
-	./09_resolve_alerts.sh
+./09_resolve_alerts.sh
 ----
 
