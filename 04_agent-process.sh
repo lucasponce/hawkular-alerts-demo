@@ -18,7 +18,11 @@ create_msg () {
 send_data () {
 	MSG=$(create_msg $1)
 	TENANT="my-organization"
-	CODE=$(curl -s -o /dev/null -w "%{http_code}" -X POST --header "Hawkular-Tenant: $TENANT" --header "Content-Type:application/json" --data "$MSG" http://localhost:8080/hawkular/alerts/data)
+	CODE=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
+	--header "Hawkular-Tenant: $TENANT" \
+	--header "Content-Type:application/json" \
+	--data "$MSG" \
+	http://localhost:8080/hawkular/alerts/data)
 	echo "Sent data [$CODE]"
 	echo "$MSG"
 	echo ""

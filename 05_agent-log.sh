@@ -25,7 +25,11 @@ create_event () {
 send_event () {
 	MSG=$(create_event $@)	
 	TENANT="my-organization"
-	CODE=$(curl -s -o /dev/null -w "%{http_code}" -X POST --header "Hawkular-Tenant: $TENANT" --header "Content-Type:application/json" --data "$MSG" http://localhost:8080/hawkular/alerts/events/data)
+	CODE=$(curl -s -o /dev/null -w "%{http_code}" -X POST \
+	--header "Hawkular-Tenant: $TENANT" \
+	--header "Content-Type:application/json" \
+	--data "$MSG" \
+	http://localhost:8080/hawkular/alerts/events/data)
 	echo "Sent event [$CODE]"
 	echo "$MSG"
 	echo ""
