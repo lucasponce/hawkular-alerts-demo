@@ -235,6 +235,6 @@ To resolve acknowledge alerts we can use the following script:
  
 [source,shell,subs="+attributes"]
 ----
-./09_resolve_alerts.sh
+    ./09_resolve_alerts.sh
 ----
 
