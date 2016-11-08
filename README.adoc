@@ -4,9 +4,9 @@ This repository contains resources to prepare a standalone demo for Hawkular Ale
 
 NOTE: This demo has been tested on Linux platforms. Bash scripts can be easily translated into other platforms.
 
-== Step 0: Prepare Hawkular Alerting
+== Prepare Hawkular Alerting
 
-Build a Hawkular Alerting standalone distribution
+Build a Hawkular Alerting standalone distribution:
 
 [source,shell,subs="+attributes"]
 ----
@@ -15,7 +15,7 @@ Build a Hawkular Alerting standalone distribution
     mvn clean install
 ----
 
-Start the standalone server
+Start the standalone server:
 
 [source,shell,subs="+attributes"]
 ----
@@ -43,7 +43,7 @@ A GUI SMTP server can be set up with these steps:
 ----
 ==================
 
-== Step I: Install and start a Wildfly Server
+== Install and start a Wildfly Server
 
 In a new bash session:
  +
@@ -51,37 +51,83 @@ In a new bash session:
 ----    
     ./01_install.sh
 ----
- +
 
 It downloads and installs on current folder a Wildfly Server. +
 This Wildfly Server will be used to send data and events into Hawkular Alerting.
 
-Then +
+Then start the server on a port-offset=150 using: +
 
 [source,shell,subs="+attributes"]
 ----    
     ./02_start-wildfly.sh
 ----
 
-It starts a Wildfly Server with a port-offset=150.
+== Import triggers definitions
 
-== Step II: Import triggers definitions
+In a new bash session, import the definitions using the script:
 
 [source,shell,subs="+attributes"]
 ----    
     ./03_import-definitions.sh
 ----
 
-== Step III: Start a process agent
+The definitions are structured on the following files.
 
-In a new bash session:
+=== import-actions.json
+
+List of actions defined.
+
+Actions can be shared across several triggers definitions.
+
+=== import-availability.json
+
+It defines one trigger to detect when the Wildfly Server is down.
+ +
+This trigger uses AUTORESOLVE feature. +
+This functionality uses a FIRING condition to detect when the server is down and fire a CRITICAL Alert. +
+But this trigger also defines an AUTORESOLVE condition to detect with the server is up again. +
+ +
+Then Alerts opened will be automatically resolved once the Wildfly Server is up again.
+
+=== import-deployments.json
+
+Two triggers are defined to detect when new applications are deployed or undeployed into the Wildfly Server.
+ +
+These triggers do not generate Alerts but Events. +
+This means that there is not lifecycle or pending tasks to resolve on Events. +
+Events can be also notified using the actions defined on import-actions.json.
+
+=== import-applications.json
+
+Two more triggers are defined to detect WARN and ERROR log messages of an specific demo application.
+ +
+The trigger that detects WARN messages has defined a Dampening rule to control when the alert will be generated. +
+On this case, it will fire when there are at least 3 WARN messages on a sequence of 10 log messages. +
+ +
+On the contrary, the trigger that detects ERROR message will fire on a single ERROR message.
+
+== Start a process agent
+
+One we have our definitions stored in Hawkular Alerting we need to feed data and events to start evaluating. +
+On regular scenarios this task is performed by specific agents. +
+For this demo, we have simulated very simple scripts that monitors the Wildfly Server.
+ +
+
+This first script monitors when the Wildfly Server process is present and it sends and availability data via an endpoint. +
+In normal scenarios, the monitoring data storage is handled by Hawkular Metrics component, and data is pulled from this. +
+ + 
+For this demo, we wanted to show how it is possible to send directly data into Hawkular Alerting for evaluation.
+ +
+In a new bash session, executes the script:
  +
 [source,shell,subs="+attributes"]
 ----    
     ./04_agent-process.sh
 ----
 
-=== Step III.a: Stop the Wildfly Server
+Now, we are ready to test the availability.
+
+=== Stop the Wildfly Server
 
 Try to stop the Wildfly Server started on Step I with a CTRL+C. +
 Check that in two seconds Hawkular Alerting should receive an Alert like:
@@ -91,9 +137,9 @@ Check that in two seconds Hawkular Alerting should receive an Alert like:
 21:16:43,555 INFO  [org.hawkular.alerts.actions.api] (standalone-action-0) HAWKALERT240001: Plugin [email] has received an action message: [StandaloneActionMessage[action=Action[eventId='wildfly-availability-1478549803040-a3de9345-8a97-4cd9-a18f-3e32b1791f70', ctime=1478549803042, event=Alert{severity=CRITICAL, status=OPEN, notes=[], lifecycle=[LifeCycle{user='system', status=OPEN, stime=1478549803040}], resolvedEvalSets=null}, result='WAITING']]]
 ----
 
-If an smtp email server is configured you should received a proper Alert [open] email.
+If an smtp email server is configured you should received a proper open Alert email.
 
-=== Step III.b: Re-start the Wildfly Server
+=== Re-start the Wildfly Server
 
 Re-start the server with the script
 
@@ -109,10 +155,12 @@ Check that Hawkular Alerting should automatically resolve the open Alert.
 21:16:59,549 INFO  [org.hawkular.alerts.actions.api] (standalone-action-1) HAWKALERT240001: Plugin [email] has received an action message: [StandaloneActionMessage[action=Action[eventId='wildfly-availability-1478549803040-a3de9345-8a97-4cd9-a18f-3e32b1791f70', ctime=1478549819082, event=Alert{severity=CRITICAL, status=RESOLVED, notes=[Note{user='AutoResolve', ctime=1478549819066, text='Trigger AutoResolve=True'}], lifecycle=[LifeCycle{user='system', status=OPEN, stime=1478549803040}, LifeCycle{user='AutoResolve', status=RESOLVED, stime=1478549819066}], resolvedEvalSets=[[AvailabilityConditionEval [condition=AvailabilityCondition [triggerId='wildfly-availability', triggerMode=AUTORESOLVE, dataId='demo-avail', operator='UP'], value=UP, match=true, evalTimestamp=1478549819038, dataTimestamp=1478549817727]]]}, result='WAITING']]]  
 ----
 
-If an smtp email server is configured you should received a proper Alert [resolved] email.
+If an smtp email server is configured you should received a proper resolved Alert email.
 
-== Step IV: Start a log agent
+== Start a log agent
 
+We can also to monitor the Wildfly Server log file and send specific log lines like events into Hawkular Alerting.
+ + 
 In a new bash session:
  +
 [source,shell,subs="+attributes"]
@@ -120,7 +168,9 @@ In a new bash session:
     ./05_agent-log.sh
 ----
 
-=== Step IV.a: Deploy/Undeploy demo app
+Now, we are ready to test the deployments and applications triggers.
+
+=== Deploy/Undeploy demo app
 
 In a new bash session:
  +
@@ -144,8 +194,7 @@ Check that Hawkular Alerting trigger events for deployed and undeployed applicat
 
 If an smtp email server is configured you should received a proper Event email.
 
-
-=== Step IV.b: Interact with the demo app
+=== Interact with the demo app
 
 Open a browser on:
 
@@ -154,4 +203,7 @@ Open a browser on:
 	http://localhost:8230/wildfly-helloworld-html5/
 ----
 
-Introduce _name1_ as a name to generate an app WARN log or _name2_ to generate an app ERROR log.
+This demo app is configured to print INFO messages every time the form is submitted. +
+But using _name1_ as a name will generate an app WARN log and using _name2_ will generate an app ERROR log.
+ +
+Try to validate how Dampening is acting and only and alert will be generated when there are 3 WARN messages per 10 total messages of the log but an alert will be generated on every single ERROR message.

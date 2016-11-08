@@ -19,7 +19,7 @@
 		  "triggerMode": "FIRING",
 		  "type": "RELAXED_COUNT",
 		  "evalTrueSetting": 3,
-		  "evalTotalSetting": 6
+		  "evalTotalSetting": 10
 	    }	
 	  ],
       "conditions":[
