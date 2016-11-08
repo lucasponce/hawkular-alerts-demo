@@ -15,7 +15,7 @@ Build a Hawkular Alerting standalone distribution:
     mvn clean install
 ----
 
-Start the standalone server:
+Start Hawkular Alerting:
 
 [source,shell,subs="+attributes"]
 ----
@@ -43,7 +43,7 @@ A GUI SMTP server can be set up with these steps:
 ----
 ==================
 
-== Install and start a Wildfly Server
+== Install and start a monitored Wildfly Server
 
 In a new bash session:
  +
