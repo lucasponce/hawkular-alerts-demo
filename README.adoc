@@ -54,9 +54,9 @@ This Wildfly Server will be started with port-offset=150.
 In a new bash session:
  +
 [source,shell,subs="+attributes"]
-----    
-	git clone https://github.com/lucasponce/hawkular-alerts-demo.git
-	cd hawkular-alerts-demo
+----
+git clone https://github.com/lucasponce/hawkular-alerts-demo.git
+cd hawkular-alerts-demo
     ./01_install.sh
     ./02_start-wildfly.sh
 ----
