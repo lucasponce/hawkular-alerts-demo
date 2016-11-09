@@ -13,6 +13,10 @@
           {
             "actionPlugin": "email",
             "actionId": "notify-to-admins"
+          },
+          {
+            "actionPlugin": "webhook",
+            "actionId": "ping-webhook"
           }
         ]
       },
