@@ -4,12 +4,14 @@ This repository contains resources to prepare a standalone demo for Hawkular Ale
  +
 This demo will build a standalone distribution of Hawkular Alerting. +
  + 
-It will download and install a second Wildfly Server that will be monitored + 
+It will also download and install a secondary Wildfly Server that will be monitored + 
 sending data and logs into Hawkular Alerting for evaluation. 
  
 NOTE: This demo has been tested on Linux platforms. Bash scripts can be easily translated into other platforms.
 
-== Prepare Hawkular Alerting
+== Step 0: Prepare Hawkular Alerting
+
+On this step we will build and run a Hawkular Alerting standalone distribution:
 
 Build a Hawkular Alerting standalone distribution:
 
@@ -17,13 +19,7 @@ Build a Hawkular Alerting standalone distribution:
 ----
     git clone https://github.com/hawkular/hawkular-alerts.git
     cd hawkular-alerts
-    mvn clean install
-----
-
-Start Hawkular Alerting:
-
-[source,shell,subs="+attributes"]
-----
+    mvn clean install -DskipTests
     cd hawkular-alerts-rest-tests/target/wildfly-10.0.0.Final/
     bin/standalone.sh
 ----
@@ -48,26 +44,24 @@ A GUI SMTP server can be set up with these steps:
 ----
 ==================
 
-== Install and start a monitored Wildfly Server
+== Step 1: Install and start a monitored Wildfly Server
 
+Now we are going to prepare a secondary Wildfly Server that will be monitored + 
+during this demo.
+ +
+This Wildfly Server will be started with port-offset=150.
+ + 
 In a new bash session:
  +
 [source,shell,subs="+attributes"]
 ----    
+	git clone https://github.com/lucasponce/hawkular-alerts-demo.git
+	cd hawkular-alerts-demo
     ./01_install.sh
-----
-
-It downloads and installs on current folder a Wildfly Server. +
-This Wildfly Server will be used to send data and events into Hawkular Alerting.
-
-Then start the server on a port-offset=150 using: +
-
-[source,shell,subs="+attributes"]
-----    
     ./02_start-wildfly.sh
 ----
 
-== Import trigger definitions
+== Step 3: Import trigger definitions
 
 In a new bash session, import the definitions using the script:
 
@@ -77,7 +71,7 @@ In a new bash session, import the definitions using the script:
 ----
 
 The definitions are structured on the following files.
-
+ 
 === import-actions.json
 
 List of actions defined.
@@ -113,7 +107,7 @@ On the contrary, the trigger that detects ERROR message will fire on a single ER
  +
 These triggers do not AUTORESOLVE the issue, so this means that these applications alerts need human intervention to be resolved. 
 
-== Start a process agent
+== Step 3: Start a process agent
 
 One we have our definitions stored in Hawkular Alerting we need to feed data and events to start evaluating. +
 On regular scenarios this task is performed by specific agents. +
@@ -134,9 +128,9 @@ In a new bash session, executes the script:
 
 Now, we are ready to test the availability.
 
-=== Stop the Wildfly Server
+=== Step 3.1: Stop the Wildfly Server
 
-Try to stop the Wildfly Server started on Step I with a CTRL+C. +
+Try to stop the Wildfly Server started on Step 1 with a CTRL+C. +
 Check that in two seconds Hawkular Alerting should receive an Alert like:
 
 [source,shell,subs="+attributes"]
@@ -146,7 +140,7 @@ Check that in two seconds Hawkular Alerting should receive an Alert like:
 
 If an smtp email server is configured you should received a proper open Alert email.
 
-=== Re-start the Wildfly Server
+=== Step 3.2: Re-start the Wildfly Server
 
 Re-start the server with the script
 
@@ -164,7 +158,7 @@ Check that Hawkular Alerting should automatically resolve the open Alert.
 
 If an smtp email server is configured you should received a proper resolved Alert email.
 
-== Start a log agent
+== Step 4: Start a log agent
 
 We can also to monitor the Wildfly Server log file and send specific log lines like events into Hawkular Alerting.
  + 
@@ -177,22 +171,34 @@ In a new bash session:
 
 Now, we are ready to test the deployments and applications triggers.
 
-=== Deploy/Undeploy demo app
+=== Step 4.1: Deploy a demo app
 
 In a new bash session:
  +
 [source,shell,subs="+attributes"]
 ----    
     ./06_deploy-app.sh
-    ./07_undeploy-app.sh
 ----
 
-Check that Hawkular Alerting trigger events for deployed and undeployed applications.
+Check that Hawkular Alerting trigger events for deployed applications.
 
 [source,shell,subs="+attributes"]
 ----    
 21:33:21,441 INFO  [org.hawkular.alerts.actions.api] (standalone-action-4) HAWKALERT240001: Plugin [email] has received an action message: [StandaloneActionMessage[action=Action[eventId='wildfly-deployments-1478550801091-4c88ec46-69fa-4a48-b36f-f77d5a5d5534', ctime=1478550801091, event=Event [tenantId=my-organization, id=wildfly-deployments-1478550801091-4c88ec46-69fa-4a48-b36f-f77d5a5d5534, ctime=1478550801091, category=TRIGGER, dataId=wildfly-deployments, dataSource=_none_, text=Generate events on deployments, context={}, tags={}, trigger=Trigger [tenantId=my-organization, id=wildfly-deployments, type=STANDARD, eventType=EVENT, name=Deployments on Wildfly Server, description=Generate events on deployments, eventCategory=null, eventText=null, severity=MEDIUM, context={}, actions=[TriggerAction[tenantId='my-organization', actionPlugin='email', actionId='notify-to-developers', states=[], calendar='null']], autoDisable=false, autoEnable=false, autoResolve=false, autoResolveAlerts=true, autoResolveMatch=ALL, memberOf=null, dataIdMap={}, enabled=true, firingMatch=ALL, mode=FIRING, tags={}]], result='WAITING']]]
 ----
+
+If an smtp email server is configured you should received a proper Event email.
+
+=== Step 4.2: Undeploy demo app
+
+In a bash session:
+ +
+[source,shell,subs="+attributes"]
+----    
+    ./07_undeploy-app.sh
+----
+
+Check that Hawkular Alerting trigger events for undeployed applications.
 
 [source,shell,subs="+attributes"]
 ----
@@ -201,7 +207,9 @@ Check that Hawkular Alerting trigger events for deployed and undeployed applicat
 
 If an smtp email server is configured you should received a proper Event email.
 
-=== Interact with the demo app
+=== Step 4.3: Interact with the demo app
+
+Repeat Step 4.1 to deploy again the demo app.
 
 Open a browser on:
 
@@ -220,7 +228,7 @@ per 10 total messages.
  +
 Check that an alert will be generated on every single app ERROR message.
 
-== Acknowledge and resolve open Alerts
+== Step 5: Acknowledge and resolve open Alerts
 
 Triggers without AUTORESOLVE feature enabled fire Alerts that need manual intervention.
  +
