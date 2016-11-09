@@ -38,6 +38,10 @@
           {
             "actionPlugin": "email",
             "actionId": "notify-to-developers"
+          },
+          {
+            "actionPlugin": "webhook",
+            "actionId": "ping-webhook"
           }
         ]
       },
