@@ -65,7 +65,7 @@ In a new bash session:
     ./02_start-wildfly.sh
 ----
 
-== Step 3: Import trigger definitions
+== Step 2: Import trigger definitions
 
 In a new bash session, import the definitions using the script:
 
