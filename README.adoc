@@ -44,7 +44,7 @@ A GUI SMTP server can be set up with these steps:
 ----
 
 We use ``sudo java -jar fakeSMTP-*.jar`` to set the SMTP into the 25 port which is protected. +
-If the JDK is only defined locally but not per all the users you might get an error related the GUI can be correctly started. +
+If the JDK is only defined locally but not per all the users you might get an error related the GUI can not be correctly started. +
 Try to set up your jdk correctly using ``alternatives --config java`` and selecting your jdk for all users.
 ==================
 
